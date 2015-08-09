@@ -1,6 +1,7 @@
 package secretballcom.example.zion.secretball;
 
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 mAnswerLabel.setText(answer);
                 animateCrystalBall();
                 animateAnswer();
+                playSound();
 
             }
         });
@@ -57,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
         fadeAnimation.setDuration(1500);
         fadeAnimation.setFillAfter(true);
         mAnswerLabel.setAnimation(fadeAnimation);
+    }
+    private void playSound(){
+        MediaPlayer player = MediaPlayer.create(this,R.raw.music);
+        player.start();
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+        });
     }
 
     @Override
