@@ -1,33 +1,62 @@
 package secretballcom.example.zion.secretball;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
     private SecretBall secret = new SecretBall();
+    private TextView mAnswerLabel;
+    private Button mAetAnswerButton;
+    private ImageView mCrystalBallImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Adding our view
-        final TextView answerLabel = (TextView) findViewById(R.id.editText);
-        Button getAnswerButton = (Button) findViewById(R.id.button);
+        mAnswerLabel = (TextView) findViewById(R.id.editText);
+        mAetAnswerButton = (Button) findViewById(R.id.button);
+        mCrystalBallImage = (ImageView) findViewById(R.id.imageView);
 
-        getAnswerButton.setOnClickListener(new View.OnClickListener() {
+        mAetAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String answer = secret.getAnswer();
 
-                answerLabel.setText(answer);
+                mAnswerLabel.setText(answer);
+                animateCrystalBall();
+                animateAnswer();
+
             }
         });
+    }
+
+    private void animateCrystalBall() {
+        mCrystalBallImage.setImageResource(R.drawable.ball_animation);
+        AnimationDrawable ballAnimation = (AnimationDrawable) mCrystalBallImage.getDrawable();
+
+        if (ballAnimation.isRunning()) {
+            ballAnimation.stop();
+        }
+        ballAnimation.start();
+
+    }
+
+    private void animateAnswer(){
+        AlphaAnimation fadeAnimation = new AlphaAnimation(0,1);
+        fadeAnimation.setDuration(1500);
+        fadeAnimation.setFillAfter(true);
+        mAnswerLabel.setAnimation(fadeAnimation);
     }
 
     @Override
