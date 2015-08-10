@@ -1,14 +1,14 @@
 package secretballcom.example.zion.secretball;
 
 import android.graphics.drawable.AnimationDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,8 +16,10 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     private SecretBall secret = new SecretBall();
     private TextView mAnswerLabel;
-    private Button mAetAnswerButton;
     private ImageView mCrystalBallImage;
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeDetector mShakeDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,22 +27,40 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //Adding our view
         mAnswerLabel = (TextView) findViewById(R.id.editText);
-        mAetAnswerButton = (Button) findViewById(R.id.button);
         mCrystalBallImage = (ImageView) findViewById(R.id.imageView);
 
-        mAetAnswerButton.setOnClickListener(new View.OnClickListener() {
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector= new ShakeDetector(new ShakeDetector.OnShakeListener() {
             @Override
-            public void onClick(View v) {
-
-                String answer = secret.getAnswer();
-
-                mAnswerLabel.setText(answer);
-                animateCrystalBall();
-                animateAnswer();
-                playSound();
-
+            public void onShake() {
+                handleNewAnswer();
             }
         });
+
+    }
+
+    @Override
+
+    public void onResume(){
+        super.onResume();
+        mSensorManager.registerListener(mShakeDetector, mAccelerometer,
+                mSensorManager.SENSOR_DELAY_UI);
+    }
+    @Override
+
+    public void onPause(){
+        super.onPause();
+        mSensorManager.unregisterListener(mShakeDetector);
+    }
+
+    private void handleNewAnswer() {
+        String answer = secret.getAnswer();
+
+        mAnswerLabel.setText(answer);
+        animateCrystalBall();
+        animateAnswer();
+        playSound();
     }
 
     private void animateCrystalBall() {
