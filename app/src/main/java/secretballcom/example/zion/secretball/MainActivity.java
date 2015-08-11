@@ -6,14 +6,17 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
+    public static final String TAG = MainActivity.class.getName();
     private SecretBall secret = new SecretBall();
     private TextView mAnswerLabel;
     private ImageView mCrystalBallImage;
@@ -37,6 +40,13 @@ public class MainActivity extends AppCompatActivity {
                 handleNewAnswer();
             }
         });
+
+        //Toast message
+
+        Toast.makeText(this, "Yo! This is a great app", Toast.LENGTH_LONG).show();
+
+        Log.d(TAG,"We are in onCreate() method");
+
 
     }
 
